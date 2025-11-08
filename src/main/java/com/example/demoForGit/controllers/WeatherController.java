@@ -7,14 +7,24 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/weather")
 public class WeatherController {
+
     @Autowired
     private WeatherService weatherService;
+
+    // Endpoint for current weather of a city
     @GetMapping("/{city}")
     public WeatherData getWeather(@PathVariable String city){
         return weatherService.getWeather(city);
+    }
+
+    // Endpoint for weather forecast of a city (returns a list of forecasts)
+    @GetMapping("/forecast/{city}")
+    public List<WeatherData> getWeatherForecast(@PathVariable String city){
+        return weatherService.getWeatherForecast(city);
     }
 }

@@ -31,5 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
-
+# Ignore application.properties (or any sensitive config files) in resources
 /src/main/resources/application.properties
+
+# Or to exclude all properties files in the resources folder
+/src/main/resources/*.properties
