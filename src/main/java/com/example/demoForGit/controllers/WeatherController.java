@@ -18,8 +18,13 @@ public class WeatherController {
 
     // Endpoint for current weather of a city
     @GetMapping("/{city}")
-    public WeatherData getWeather(@PathVariable String city){
-        return weatherService.getWeather(city);
+    public String getWeather(@PathVariable String city){
+        return  weatherService.getWeather(city);
+    }
+
+    @GetMapping("/{lat:.+}/{lon:.+}")
+    public String getReverseGeocoding(@PathVariable("lat") double lat,@PathVariable("lon") double lon){
+        return weatherService.getReverseGeocoding(lat,lon);
     }
 
     // Endpoint for weather forecast of a city (returns a list of forecasts)

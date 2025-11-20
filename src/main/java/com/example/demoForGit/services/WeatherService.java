@@ -21,8 +21,12 @@ public class WeatherService {
     @Value("${weather.api.key}")
     private String apikey;
 
+    private double latitude;
+    private double longitude;
+
     private final String apiUrl = "http://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=metric";
     private final String forecastUrl = "http://api.openweathermap.org/data/2.5/forecast?q={city}&appid={apiKey}&units=metric";
+    private final String reverseGeocodingUrl="https://api.openweathermap.org/geo/1.0/reverse?lat={latitude}&lon={longitude}&appid={apiKey}&units=metric";
     private static final Logger logger = LoggerFactory.getLogger(WeatherService.class);
 
     private final RestTemplate restTemplate;
@@ -35,21 +39,38 @@ public class WeatherService {
 
     // Get current weather data for a given city
     // Get current weather data for a given city
-    public WeatherData getWeather(String city) {
+    public String getWeather(String city) {
         String url = apiUrl;
         try {
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, city, apikey);
-            List<WeatherData> weatherDataList = parseWeatherData(response.getBody());
+//            List<WeatherData> weatherDataList = parseWeatherData(response.getBody());
 
-            if (weatherDataList.isEmpty()) {
-                throw new RuntimeException("No weather data found for city: " + city);
-            }
-            return weatherDataList.get(0); // Assuming only one weather data for current weather
+//            if (weatherDataList.isEmpty()) {
+//                throw new RuntimeException("No weather data found for city: " + city);
+//            }
+            return response.getBody();
+//            return weatherDataList;
+            // Assuming only one weather data for current weather
         } catch (HttpClientErrorException e) {
             logger.error("Error fetching weather data: " + e.getMessage());
             throw new RuntimeException("Error fetching weather data: " + e.getMessage(), e);
         }
     }
+
+    public String getReverseGeocoding(double lat,double lon){
+        String url=reverseGeocodingUrl;
+        try{
+
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, lat, lon, apikey);
+            return response.getBody();
+        }catch(HttpClientErrorException e) {
+            logger.error("Error fetching given lat and lon: " + e.getMessage());
+            throw new RuntimeException("Error fetching given lat and lon : " + e.getMessage(), e);
+
+        }
+    }
+
+
 
 
     // Get weather forecast data for a given city
